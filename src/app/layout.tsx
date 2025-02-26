@@ -2,15 +2,8 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 
-// import localFont from "next/font/local";
 import Providers from "@/components/Providers";
 import { Cairo } from "next/font/google";
-
-// const gess = localFont({
-//   src: [{ path: "../fonts/GE_SS_Two_Light.otf" }],
-//   weight: "400",
-//   style: "normal",
-// });
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -18,9 +11,8 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "Billa Sweet",
-  description:
-    "بيلا سويت هو محل تجاري أنيق يقدم أجمل وألذ الأصناف المميزة والمبتكرة من الحلويات والموالح تمتلكه وتديره مؤسسة الحلويات الجميلة التجارية.",
+  title: "Store",
+  description: "",
 
   metadataBase: new URL(process.env.NEXT_PUBLIC_URL!),
   openGraph: {
