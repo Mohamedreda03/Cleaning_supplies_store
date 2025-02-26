@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(cuid())
+  name     String?
+  email    String  @unique
+  password String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  images      String[]
+  best_seller Boolean     @default(false)
+  name        String
+  description String
+  points      Int
+  price       Float
+  category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  OrderItem   OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id                 String      @id @default(cuid())
+  user_name          String
+  user_id            String
+  total              Float
+  status             OrderStatus @default(PENDING)
+  address            String
+  phone              String
+  orderItems         OrderItem[]
+  order_receipt_date DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  total     Float
+  quantity  Int
+  orderId   String
+  productId String
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  item      Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
