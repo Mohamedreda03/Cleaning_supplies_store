@@ -14,12 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import Header from "@/components/auth/Header";
-
-import { Separator } from "@/components/ui/separator";
 import { SignUpFormTypes, SignUpSchema } from "@/types/schema";
-import { useState, useTransition } from "react";
-import signup from "@/actions/signup";
 import { LoaderCircle } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";

@@ -115,7 +115,7 @@ export default function OrderModel({
             </div>
             <div>
               <Image
-                src={product.image}
+                src={product.images[0]}
                 width={200}
                 height={200}
                 alt="product image"

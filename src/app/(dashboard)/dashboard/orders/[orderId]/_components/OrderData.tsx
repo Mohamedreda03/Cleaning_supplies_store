@@ -163,7 +163,7 @@ export function OrderData({ order }: { order: IOrder }) {
               <TableRow key={orderItem.id}>
                 <TableCell className="text-center">
                   <Image
-                    src={orderItem.item.image}
+                    src={orderItem.item.images[0]}
                     alt="orderItem image"
                     width={60}
                     height={40}
