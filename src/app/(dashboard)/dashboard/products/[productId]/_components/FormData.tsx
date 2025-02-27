@@ -73,7 +73,7 @@ const FormData = ({
   return (
     <>
       <div className="flex gap-6 flex-col md:flex-row">
-        <div className="max-w-[900px] w-full px-5 py-10 md:px-20">
+        <div className="max-w-[900px] w-full px-5 py-10">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}

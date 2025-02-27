@@ -6,17 +6,7 @@ import { useState } from "react";
 import { Product } from "@prisma/client";
 import Image from "next/image";
 import useCart from "@/store/cartStore";
-import { Textarea } from "../ui/textarea";
-import { Label } from "../ui/label";
 import "./model.css";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface DeleteAlertProps {
   isOpen: boolean;

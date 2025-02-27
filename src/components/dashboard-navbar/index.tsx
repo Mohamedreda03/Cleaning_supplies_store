@@ -8,13 +8,13 @@ import Link from "next/link";
 
 export default function DashboardNavbar() {
   return (
-    <div className="md:pr-56">
+    <div className="lg:pr-56">
       <div className="w-full h-[60px] border-b flex items-center justify-between">
         <div className="px-5 flex items-center justify-between w-full">
           <div>
             <MobileNavbar />
 
-            <Link href="/" className="hidden md:block">
+            <Link href="/" className="hidden lg:block">
               <Button
                 variant="outline"
                 className={cn("w-full flex items-center justify-center gap-2")}

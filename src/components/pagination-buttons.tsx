@@ -1,77 +1,79 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
 
-export default function PaginationButtons({
-  url,
-  pageCount,
-  currentPage,
-  pageSize,
-}: // setPage,
-{
-  pageCount: number;
+interface PagenationProps {
   currentPage: number;
-  url: string;
-  pageSize: string | number;
-  // setPage: Dispatch<SetStateAction<number>>;
-}) {
-  const [page, setPage] = useState(currentPage);
-  const size = Number(pageSize);
+  setCurrentPage: (page: number) => void;
+  searchTotalPages: number;
+}
 
-  const router = useRouter();
-
-  const handleNext = () => {
-    setPage((prev) => prev + 1);
-    router.push(`/dashboard/${url}?page=${currentPage + 1}&size=${size}`);
-  };
-
-  const handlePrev = () => {
-    setPage((prev) => prev - 1);
-    router.push(`/dashboard/${url}?page=${currentPage - 1}&size=${size}`);
-  };
-
+export default function Pagenation({
+  currentPage,
+  searchTotalPages,
+  setCurrentPage,
+}: PagenationProps) {
   return (
-    <>
-      {pageCount > 1 && (
-        <div className="flex justify-center flex-row-reverse gap-4  mb-16">
-          <button
-            onClick={handlePrev}
-            disabled={currentPage === 1}
-            className="px-4 py-2 text-color-3 bg-color-2 rounded-md disabled:opacity-50"
-          >
-            Prev
-          </button>
+    <div className="mt-3 mb-4 flex items-center justify-center">
+      <div className="flex items-center gap-3">
+        {/* زر الانتقال إلى الصفحة التالية */}
+        <Button
+          variant={"custom"}
+          disabled={currentPage === searchTotalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          <ArrowRight size={15} className="ml-1.5" />
+          <span>التالي</span>
+        </Button>
 
-          {pageCount &&
-            Array.from({ length: pageCount }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => {
-                  setPage(i + 1);
-                  router.push(`/dashboard/${url}?page=${i + 1}&size=${size}`);
-                }}
-                className={cn(
-                  `px-4 py-2 text-color-2 border-2 border-color-2/50 rounded-md`,
-                  i + 1 === currentPage
-                    ? "bg-color-2 text-color-3"
-                    : "hover:bg-color-1 hover:text-white"
-                )}
-              >
-                {i + 1}
-              </button>
+        {/* أرقام الصفحات */}
+        <div className="flex items-center flex-row-reverse gap-2 text-lg">
+          {Array.from({ length: searchTotalPages }, (_, i) => i + 1)
+            .filter((page) => {
+              // منطق عرض الصفحات:
+              // - يجب عرض الصفحة الحالية
+              // - عرض الصفحات المحيطة بالصفحة الحالية (نطاق محدد)
+              // - عرض أول صفحة وآخر صفحة دائمًا
+              const range = 2; // عدد الصفحات حول الصفحة الحالية
+              return (
+                page === 1 || // أول صفحة
+                page === searchTotalPages || // آخر صفحة
+                (page >= currentPage - range && page <= currentPage + range)
+              );
+            })
+            .map((page, idx, filteredPages) => (
+              <React.Fragment key={page}>
+                {idx > 0 &&
+                  page !== filteredPages[idx - 1] + 1 && ( // إضافة النقاط إذا كانت الصفحات غير متتالية
+                    <span key={`dots-${idx}`}>...</span>
+                  )}
+                <span
+                  key={page}
+                  className={cn(
+                    "cursor-pointer border px-2 rounded-md",
+                    page === currentPage ? "border-secondary/75" : ""
+                  )}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </span>
+              </React.Fragment>
             ))}
-
-          <button
-            disabled={currentPage === pageCount}
-            onClick={handleNext}
-            className="px-4 py-2 text-color-3 bg-color-2 rounded-md disabled:opacity-50"
-          >
-            Next
-          </button>
         </div>
-      )}
-    </>
+
+        {/* زر الانتقال إلى الصفحة السابقة */}
+        <Button
+          variant={"custom"}
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          <span>السابق</span>
+          <ArrowLeft size={15} className="mr-1.5" />
+        </Button>
+      </div>
+    </div>
   );
 }

@@ -12,12 +12,19 @@ import {
 } from "@/components/ui/table";
 import { User } from "@prisma/client";
 import axios from "axios";
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "react-query";
 
-export default function DataTable({ users }: { users: User[] }) {
+export default function DataTable({
+  users,
+  isLoading: isDataLoading,
+}: {
+  users: User[];
+  isLoading: boolean;
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
@@ -48,7 +55,7 @@ export default function DataTable({ users }: { users: User[] }) {
         title={"حذف المستخدم"}
         description={"هل انت متأكد من حذف المستخدم؟"}
       />
-      <div className="px-5 pb-5 md:px-20">
+      <div className="px-5 pb-5">
         <Table className="border">
           <TableHeader>
             <TableRow>
@@ -61,7 +68,18 @@ export default function DataTable({ users }: { users: User[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.length === 0 && (
+            {isDataLoading && (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center text-lg text-muted-foreground h-20"
+                >
+                  <LoaderCircle className="animate-spin mx-auto" size={32} />
+                </TableCell>
+              </TableRow>
+            )}
+
+            {users?.length === 0 && (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -72,7 +90,7 @@ export default function DataTable({ users }: { users: User[] }) {
               </TableRow>
             )}
 
-            {users.map((user) => (
+            {users?.map((user) => (
               <TableRow key={user.name}>
                 <TableCell className="font-medium text-center">
                   {user.name}

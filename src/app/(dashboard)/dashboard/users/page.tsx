@@ -3,14 +3,12 @@
 import DataTable from "./_components/DataTable";
 import { useQuery } from "react-query";
 import axios from "axios";
-import Loading from "@/components/Loading";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import PaginationButtons from "@/components/pagination-buttons";
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Search } from "lucide-react";
 import CustomModel from "@/components/models/CustomModel";
 import AddUserForm from "./_components/AddUserForm";
 
@@ -19,29 +17,39 @@ export default function Users() {
   const pageSize = searchParams.get("size") || 10;
   const pageNumber = searchParams.get("page") || 1;
 
+  const router = useRouter();
+
   const [search, setSearch] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchButon, setSearchButon] = useState<string>("");
 
   const onClose = () => {
     setIsOpen(false);
   };
 
   const { data: users, isLoading } = useQuery({
-    queryKey: ["users", pageNumber, pageSize],
+    queryKey: ["users", pageNumber, pageSize, searchButon],
     queryFn: async () => {
       return await axios.get(
-        "/api/users?page=" + pageNumber + "&size=" + pageSize
+        "/api/users?page=" +
+          pageNumber +
+          "&size=" +
+          pageSize +
+          "&search=" +
+          search
       );
     },
   });
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  const handleSearchButon = () => {
+    setSearchButon(Math.random().toString());
+  };
 
-  const filterUsers = users?.data?.data?.filter((item: any) =>
-    item?.name?.includes(search)
-  );
+  const setCurrentPage = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    router.push(`/dashboard/products?${params.toString()}`);
+  };
 
   return (
     <>
@@ -49,7 +57,7 @@ export default function Users() {
         <AddUserForm onClose={onClose} />
       </CustomModel>
       <div>
-        <div className="px-5 md:px-20 py-10 flex items-center justify-between">
+        <div className="px-5 py-10 flex items-center justify-between">
           <h1 className="text-3xl font-medium border-b-2 border-color-1">
             المستخدمين
           </h1>
@@ -60,23 +68,31 @@ export default function Users() {
             </Button>
           </div>
         </div>
-        <div className="px-5 md:px-20 pb-3">
-          <Label className="text-lg">بحث</Label>
+        <div className="flex items-center gap-4 pb-3 px-5 max-w-[500px] w-full">
           <Input
             type="text"
-            className="max-w-[300px] mt-2"
-            placeholder="ابحث عن مستخدم"
+            className="w-full"
+            placeholder={"ابحث باسم المستخدم"}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+
+          <Button
+            onClick={handleSearchButon}
+            variant="custom"
+            className="max-w-[70px] w-full"
+          >
+            <Search size={20} />
+          </Button>
         </div>
-        <DataTable users={filterUsers} />
-        <PaginationButtons
-          currentPage={Number(pageNumber)}
-          pageCount={users?.data?.count}
-          url="users"
-          pageSize={Number(pageSize)}
-        />
+        <DataTable users={users?.data?.data} isLoading={isLoading} />
+        {users?.data?.count > 1 && (
+          <PaginationButtons
+            currentPage={Number(pageNumber)}
+            searchTotalPages={users?.data?.count}
+            setCurrentPage={setCurrentPage}
+          />
+        )}
       </div>
     </>
   );

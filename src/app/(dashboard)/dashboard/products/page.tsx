@@ -4,12 +4,11 @@ import DataTable from "./_components/DataTable";
 import { useQuery } from "react-query";
 import axios from "axios";
 import Loading from "@/components/Loading";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import PaginationButtons from "@/components/pagination-buttons";
 import { Button } from "@/components/ui/button";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Search } from "lucide-react";
 import { useState } from "react";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
@@ -18,28 +17,38 @@ export default function Users() {
   const pageSize = searchParams.get("size") || 10;
   const pageNumber = searchParams.get("page") || 1;
 
+  const router = useRouter();
+
   const [search, setSearch] = useState<string>("");
+  const [searchButon, setSearchButon] = useState<string>("");
+
+  const handleSearchButon = () => {
+    setSearchButon(Math.random().toString());
+  };
+
+  const setCurrentPage = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    router.push(`/dashboard/products?${params.toString()}`);
+  };
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ["products", pageNumber, pageSize],
+    queryKey: ["products", pageNumber, pageSize, searchButon],
     queryFn: async () => {
       return await axios.get(
-        "/api/products?page=" + pageNumber + "&size=" + pageSize
+        "/api/products?page=" +
+          pageNumber +
+          "&size=" +
+          pageSize +
+          "&search=" +
+          search
       );
     },
   });
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  const filterProducts = products?.data?.data?.filter((item: any) =>
-    item?.name?.includes(search)
-  );
-
   return (
     <div>
-      <div className="px-5 md:px-20 py-10 flex items-center justify-between">
+      <div className="px-5 py-10 flex items-center justify-between">
         <h1 className="text-3xl font-medium border-b-2 border-color-1">
           المنتجات
         </h1>
@@ -55,25 +64,31 @@ export default function Users() {
           </Link>
         </div>
       </div>
-      <div className="px-5 md:px-20 pb-3">
-        <Label className="text-lg">{"البحث"}</Label>
+      <div className="flex items-center gap-4 pb-3 px-5 max-w-[500px] w-full">
         <Input
           type="text"
-          className="max-w-[300px] mt-2"
-          placeholder={"ابحث عن منتج"}
+          className="w-full"
+          placeholder={"ابحث باسم المنتج"}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+
+        <Button
+          onClick={handleSearchButon}
+          variant="custom"
+          className="max-w-[70px] w-full"
+        >
+          <Search size={20} />
+        </Button>
       </div>
-      <DataTable
-        data={search.length > 0 ? filterProducts : products?.data?.data}
-      />
-      <PaginationButtons
-        currentPage={Number(pageNumber)}
-        pageCount={products?.data?.count}
-        url="users"
-        pageSize={Number(pageSize)}
-      />
+      <DataTable data={products?.data?.data} isLoading={isLoading} />
+      {products?.data?.count > 1 && (
+        <PaginationButtons
+          currentPage={Number(pageNumber)}
+          searchTotalPages={products?.data?.count}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </div>
   );
 }

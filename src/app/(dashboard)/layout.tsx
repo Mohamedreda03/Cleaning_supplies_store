@@ -8,7 +8,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
     <>
       <Sidebar />
       <DashboardNavbar />
-      <main className="md:pr-56">{children}</main>
+      <main className="lg:pr-56">{children}</main>
     </>
   );
 }

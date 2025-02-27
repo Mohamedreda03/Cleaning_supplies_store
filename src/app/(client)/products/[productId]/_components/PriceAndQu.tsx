@@ -1,11 +1,12 @@
 "use client";
 
-import OrderButton from "@/components/OrderButton";
 import { Button } from "@/components/ui/button";
 import useCart from "@/store/cartStore";
 import { Product } from "@prisma/client";
-import { BadgeDollarSign } from "lucide-react";
+import { BadgeDollarSign, CheckCircle } from "lucide-react";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface PriceAndQuProps {
   product: Product;
@@ -14,6 +15,7 @@ interface PriceAndQuProps {
 export default function PriceAndQu({ product }: PriceAndQuProps) {
   const [quantity, setQuantity] = useState(1);
   const cart = useCart();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const total = product?.price * quantity;
   const totalPoints = product?.points * quantity;
@@ -30,6 +32,11 @@ export default function PriceAndQu({ product }: PriceAndQuProps) {
       productId: product.id,
       price: product.price,
     });
+
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 1000);
   };
 
   return (
@@ -70,9 +77,22 @@ export default function PriceAndQu({ product }: PriceAndQuProps) {
 
       <Button
         onClick={handleAddToCart}
-        className="rounded-xl w-full bg-blue-500 hover:bg-blue-500/85 text-lg sm:max-w-[300px] h-11 mt-8"
+        className={cn("rounded-xl w-full text-lg sm:max-w-[300px] h-11 mt-8", {
+          "bg-blue-500 hover:bg-blue-500/85": !showSuccess,
+          "bg-green-500 hover:bg-green-500 text-white": showSuccess,
+        })}
       >
-        أضف الي السلة
+        {showSuccess ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+          >
+            <CheckCircle size={20} />
+          </motion.div>
+        ) : (
+          <span>أضف الي السلة</span>
+        )}
       </Button>
     </div>
   );

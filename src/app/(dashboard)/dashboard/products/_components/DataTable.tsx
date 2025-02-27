@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Product } from "@prisma/client";
 import axios from "axios";
-import { Trash2 } from "lucide-react";
+import { LoaderCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -25,7 +25,13 @@ interface Iprodcut extends Product {
   };
 }
 
-export default function DataTable({ data }: { data: Iprodcut[] }) {
+export default function DataTable({
+  data,
+  isLoading: isDataLoading,
+}: {
+  data: Iprodcut[];
+  isLoading: boolean;
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
 
@@ -56,7 +62,7 @@ export default function DataTable({ data }: { data: Iprodcut[] }) {
         title={"حذف المنتج"}
         description={"هل انت متاكد من حذف المنتج"}
       />
-      <div className="px-5 pb-5 md:px-20">
+      <div className="px-5 pb-5">
         <Table className="border">
           <TableHeader>
             <TableRow>
@@ -70,7 +76,17 @@ export default function DataTable({ data }: { data: Iprodcut[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.length === 0 && (
+            {isDataLoading && (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center text-lg text-muted-foreground h-20"
+                >
+                  <LoaderCircle className="animate-spin mx-auto" size={32} />
+                </TableCell>
+              </TableRow>
+            )}
+            {data?.length === 0 && (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -80,7 +96,7 @@ export default function DataTable({ data }: { data: Iprodcut[] }) {
                 </TableCell>
               </TableRow>
             )}
-            {data.map((item) => (
+            {data?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
                   <Image

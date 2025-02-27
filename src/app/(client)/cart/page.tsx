@@ -4,13 +4,14 @@ import CartItem from "@/components/CartItem";
 import { Button } from "@/components/ui/button";
 import useCart from "@/store/cartStore";
 import axios from "axios";
-import { BadgeDollarSign, LoaderCircle } from "lucide-react";
+import { BadgeDollarSign, CheckCircle, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { motion } from "framer-motion";
 
 import {
   Form,
@@ -59,6 +60,7 @@ export default function CartPage() {
       });
 
       toast.success("تم ارسال الطلب بنجاح");
+      router.push("/cart/success");
       cart.clearCart();
     } catch (error) {
       console.log("ORDER CREATE ERROR:", error);

@@ -33,7 +33,7 @@ export default async function UserDetails({
     <div>
       <Link
         href="/dashboard/orders"
-        className="px-5 md:px-20 py-5 flex items-center gap-3"
+        className="px-5 py-5 flex items-center gap-3"
       >
         <Button
           variant="secondary"
@@ -49,7 +49,7 @@ export default async function UserDetails({
         </Button>
       </Link>
       <div>
-        <div className="px-5 md:px-20 py-5">
+        <div className="px-5 py-5">
           <h1 className="text-3xl font-medium border-b-2 border-color-1 w-fit mb-10">
             تفاصيل الطلب
           </h1>

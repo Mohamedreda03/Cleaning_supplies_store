@@ -7,6 +7,9 @@ export async function GET(req: NextRequest) {
   const sesstion = await auth();
   const page = req.nextUrl.searchParams.get("page");
   const size = req.nextUrl.searchParams.get("size");
+  const name = req.nextUrl.searchParams.get("name");
+  const phone = req.nextUrl.searchParams.get("phone");
+  const userId = req.nextUrl.searchParams.get("userId");
 
   if (!sesstion) {
     NextResponse.redirect(new URL("/login", req.nextUrl).toString());
@@ -22,8 +25,31 @@ export async function GET(req: NextRequest) {
       orderBy: {
         createdAt: "desc",
       },
+      where: {
+        user_name: {
+          startsWith: name!,
+        },
+        phone: {
+          startsWith: phone!,
+        },
+        user_id: {
+          startsWith: userId!,
+        },
+      },
     }),
-    db.order.count(),
+    db.order.count({
+      where: {
+        user_name: {
+          startsWith: name!,
+        },
+        phone: {
+          startsWith: phone!,
+        },
+        user_id: {
+          startsWith: userId!,
+        },
+      },
+    }),
   ]);
 
   const pageCount = Math.ceil(ordersCount / Number(size));

@@ -63,7 +63,7 @@ export default function MobileNavbar() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Menu size={30} className="text-color-2 cursor-pointer md:hidden" />
+        <Menu size={30} className="text-color-2 cursor-pointer lg:hidden" />
       </SheetTrigger>
       <SheetContent>
         <div className="mt-20">

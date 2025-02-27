@@ -10,27 +10,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 import { Order } from "@prisma/client";
 import axios from "axios";
 import { format } from "date-fns";
-import { ar, enUS } from "date-fns/locale";
-import { useSession } from "next-auth/react";
+import { ar } from "date-fns/locale";
+import { LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "react-query";
 
-interface OrderType extends Order {
-  _count: {
-    special_items: number;
-  };
-}
-
-export default function DataTable({ orders }: { orders: OrderType[] }) {
+export default function DataTable({
+  orders,
+  isLoading: isOrdersLoading,
+}: {
+  orders: Order[];
+  isLoading: boolean;
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const session = useSession();
 
   const queryClient = useQueryClient();
   const { mutate, isLoading } = useMutation({
@@ -58,7 +56,7 @@ export default function DataTable({ orders }: { orders: OrderType[] }) {
         title={"حذف الطلب"}
         description={"هل انت متاكد من حذف الطلب"}
       />
-      <div className="px-5 py-10 md:px-20">
+      <div className="px-5 py-10">
         <Table className="border">
           <TableHeader>
             <TableRow>
@@ -79,7 +77,17 @@ export default function DataTable({ orders }: { orders: OrderType[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.length === 0 && (
+            {isOrdersLoading && (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center text-lg text-muted-foreground h-20"
+                >
+                  <LoaderCircle className="animate-spin mx-auto" size={32} />
+                </TableCell>
+              </TableRow>
+            )}
+            {orders?.length === 0 && (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -89,7 +97,7 @@ export default function DataTable({ orders }: { orders: OrderType[] }) {
                 </TableCell>
               </TableRow>
             )}
-            {orders.map((order) => {
+            {orders?.map((order) => {
               return (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium text-center">

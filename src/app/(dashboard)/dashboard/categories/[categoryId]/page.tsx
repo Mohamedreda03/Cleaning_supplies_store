@@ -29,7 +29,7 @@ export default function CategoryDetails() {
     <div>
       <Link
         href="/dashboard/categories"
-        className="px-5 md:px-20 py-5 flex items-center gap-3"
+        className="px-5 py-5 flex items-center gap-3"
       >
         <Button
           variant="secondary"

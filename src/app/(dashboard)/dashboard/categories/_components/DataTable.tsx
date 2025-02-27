@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Category } from "@prisma/client";
 import axios from "axios";
-import { Trash2 } from "lucide-react";
+import { LoaderCircle, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 import { useState } from "react";
@@ -25,7 +25,13 @@ interface TableProps extends Category {
   };
 }
 
-export default function DataTable({ data }: { data: TableProps[] }) {
+export default function DataTable({
+  data,
+  isLoading: isDataLoading,
+}: {
+  data: TableProps[];
+  isLoading: boolean;
+}) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
@@ -59,7 +65,7 @@ export default function DataTable({ data }: { data: TableProps[] }) {
         title={"حذف التصنيف"}
         description={"هل انت متاكد من حذف التصنيف"}
       />
-      <div className="px-5 pb-10 md:px-20">
+      <div className="px-5 pb-10">
         <Table className="border">
           <TableHeader>
             <TableRow>
@@ -69,7 +75,17 @@ export default function DataTable({ data }: { data: TableProps[] }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.length === 0 && (
+            {isDataLoading && (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="text-center text-lg text-muted-foreground h-20"
+                >
+                  <LoaderCircle className="animate-spin mx-auto" size={32} />
+                </TableCell>
+              </TableRow>
+            )}
+            {data?.length === 0 && (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -79,7 +95,7 @@ export default function DataTable({ data }: { data: TableProps[] }) {
                 </TableCell>
               </TableRow>
             )}
-            {data.map((item) => (
+            {data?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium text-center">
                   {item.name}

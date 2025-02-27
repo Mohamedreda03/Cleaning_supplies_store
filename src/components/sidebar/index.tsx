@@ -17,7 +17,7 @@ export default function Sidebar() {
   return (
     <div
       className={cn(
-        "hidden md:flex flex-col md:fixed inset-y-0 w-56 h-full py-8 right-0 border-l"
+        "hidden lg:flex flex-col md:fixed inset-y-0 w-56 h-full py-8 right-0 border-l"
       )}
     >
       <div>

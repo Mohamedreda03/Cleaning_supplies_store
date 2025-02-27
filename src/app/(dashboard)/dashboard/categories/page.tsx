@@ -7,11 +7,9 @@ import Loading from "@/components/Loading";
 import { useRouter, useSearchParams } from "next/navigation";
 import PaginationButtons from "@/components/pagination-buttons";
 import { Button } from "@/components/ui/button";
-import { CirclePlus } from "lucide-react";
-import { Category } from "@prisma/client";
-import { use, useEffect, useState } from "react";
+import { CirclePlus, Search } from "lucide-react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 export default function Users() {
@@ -19,28 +17,37 @@ export default function Users() {
   const pageSize = searchParams.get("size") || 10;
   const pageNumber = searchParams.get("page") || 1;
 
+  const router = useRouter();
+
   const [search, setSearch] = useState<string>("");
+  const [searchButon, setSearchButon] = useState<string>("");
+  const handleSearchButon = () => {
+    setSearchButon(Math.random().toString());
+  };
 
   const { data: categories, isLoading } = useQuery({
-    queryKey: ["categories", pageNumber, pageSize],
+    queryKey: ["categories", pageNumber, pageSize, searchButon],
     queryFn: async () => {
       return await axios.get(
-        "/api/categories?page=" + pageNumber + "&size=" + pageSize
+        "/api/categories?page=" +
+          pageNumber +
+          "&size=" +
+          pageSize +
+          "&search=" +
+          search
       );
     },
   });
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  const filterCategories = categories?.data?.data?.filter((item: Category) =>
-    item?.name?.includes(search)
-  );
+  const setCurrentPage = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    router.push(`/dashboard/products?${params.toString()}`);
+  };
 
   return (
     <div>
-      <div className="px-5 md:px-20 py-10 flex items-center justify-between">
+      <div className="px-5 py-10 flex items-center justify-between">
         <h1 className="md:text-3xl text-2xl font-medium border-b-2 border-color-1">
           الفئات
         </h1>
@@ -56,25 +63,31 @@ export default function Users() {
           </Link>
         </div>
       </div>
-      <div className="px-5 md:px-20 pb-3">
-        <Label className="text-lg">بحث</Label>
+      <div className="flex items-center gap-4 pb-3 px-5 max-w-[500px] w-full">
         <Input
           type="text"
-          className="max-w-[300px] mt-2"
-          placeholder="ابحث عن فئة"
+          className="w-full"
+          placeholder={"ابحث باسم المنتج"}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+
+        <Button
+          onClick={handleSearchButon}
+          variant="custom"
+          className="max-w-[70px] w-full"
+        >
+          <Search size={20} />
+        </Button>
       </div>
-      <DataTable
-        data={search.length > 0 ? filterCategories : categories?.data?.data}
-      />
-      <PaginationButtons
-        currentPage={Number(pageNumber)}
-        pageCount={categories?.data?.count}
-        url="categories"
-        pageSize={Number(pageSize)}
-      />
+      <DataTable data={categories?.data?.data} isLoading={isLoading} />
+      {categories && categories?.data?.count > 1 && (
+        <PaginationButtons
+          currentPage={Number(pageNumber)}
+          searchTotalPages={categories?.data?.count}
+          setCurrentPage={setCurrentPage}
+        />
+      )}
     </div>
   );
 }
