@@ -50,6 +50,7 @@ export default function OrderModel({
       id: product.id,
       quantity,
       total,
+      points: product.points,
       name: product.name,
       image: product.images[0],
       description: product.description,
