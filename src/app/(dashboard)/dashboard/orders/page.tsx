@@ -6,20 +6,18 @@ import axios from "axios";
 import Loading from "@/components/Loading";
 import { useRouter, useSearchParams } from "next/navigation";
 import PaginationButtons from "@/components/pagination-buttons";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
 export default function Orders() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pageSize = searchParams.get("size") || 10;
-  const pageNumber = searchParams.get("page") || 1;
   const [searchByName, setSearchByName] = useState<string>("");
   const [searchByPhone, setSearchByPhone] = useState<string>("");
   const [searchByUserId, setSearchByUserId] = useState<string>("");
   const [searchButon, setSearchButon] = useState<string>("");
+  const pageSize = 10;
+  const [pageNumber, setPageNumber] = useState(1);
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ["orders", pageNumber, pageSize, searchButon],
@@ -41,12 +39,6 @@ export default function Orders() {
 
   const handleSearchButon = () => {
     setSearchButon(Math.random().toString());
-  };
-
-  const setCurrentPage = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", page.toString());
-    router.push(`/dashboard/products?${params.toString()}`);
   };
 
   return (
@@ -94,7 +86,7 @@ export default function Orders() {
         <PaginationButtons
           currentPage={Number(pageNumber)}
           searchTotalPages={orders?.data?.count}
-          setCurrentPage={setCurrentPage}
+          setCurrentPage={setPageNumber}
         />
       )}
     </div>

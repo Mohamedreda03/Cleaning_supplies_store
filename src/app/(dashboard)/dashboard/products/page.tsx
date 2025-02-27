@@ -8,14 +8,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import PaginationButtons from "@/components/pagination-buttons";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, Search } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 export default function Users() {
-  const searchParams = useSearchParams();
-  const pageSize = searchParams.get("size") || 10;
-  const pageNumber = searchParams.get("page") || 1;
+  // const searchParams = useSearchParams();
+  // const pageSize = searchParams.get("size") || 10;
+  // const pageNumber = searchParams.get("page") || 1;
+
+  const pageSize = 10;
+  const [pageNumber, setPageNumber] = useState(1);
 
   const router = useRouter();
 
@@ -24,12 +27,6 @@ export default function Users() {
 
   const handleSearchButon = () => {
     setSearchButon(Math.random().toString());
-  };
-
-  const setCurrentPage = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", page.toString());
-    router.push(`/dashboard/products?${params.toString()}`);
   };
 
   const { data: products, isLoading } = useQuery({
@@ -86,7 +83,7 @@ export default function Users() {
         <PaginationButtons
           currentPage={Number(pageNumber)}
           searchTotalPages={products?.data?.count}
-          setCurrentPage={setCurrentPage}
+          setCurrentPage={setPageNumber}
         />
       )}
     </div>
