@@ -18,17 +18,11 @@ export default function PriceAndQu({ product }: PriceAndQuProps) {
   const total = product?.price * quantity;
   const totalPoints = product?.points * quantity;
 
-  const decrement = () => {
-    if (quantity === 1) {
-      return;
-    }
-    setQuantity(quantity - 1);
-  };
-
   const handleAddToCart = () => {
     cart.addItem({
       id: product.id,
       quantity,
+      points: product.points,
       total,
       name: product.name,
       image: product.images[0],
@@ -76,7 +70,7 @@ export default function PriceAndQu({ product }: PriceAndQuProps) {
 
       <Button
         onClick={handleAddToCart}
-        className="rounded-xl w-full bg-blue-500 hover:bg-blue-500/85 text-lg max-w-[300px] h-11 mt-8"
+        className="rounded-xl w-full bg-blue-500 hover:bg-blue-500/85 text-lg sm:max-w-[300px] h-11 mt-8"
       >
         أضف الي السلة
       </Button>

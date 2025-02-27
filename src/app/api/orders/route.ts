@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
         total: body.total,
         user_id: body.user_id,
         user_name: body.user_name,
+        gift_code: body.gift_code,
         status: "PENDING",
         orderItems: {
           createMany: {

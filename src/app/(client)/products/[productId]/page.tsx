@@ -17,8 +17,8 @@ export default async function page({
   });
 
   return (
-    <div className="flex lg:flex-row flex-col gap-11 max-w-screen-xl mx-auto w-full px-5 my-16">
-      <div className="flex-1 ">
+    <div className="flex flex-col-reverse lg:flex-row gap-11 max-w-screen-xl mx-auto w-full px-5 my-16">
+      <div className="flex-1">
         <div className="w-full mb-5">
           <h2 className="text-3xl font-bold">{product?.name}</h2>
           <p className="text-slate-700 mb-8 mt-4 max-w-[450px]">
@@ -27,7 +27,7 @@ export default async function page({
           {product && <PriceAndQu product={product} />}
         </div>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 flex items-center justify-center">
         <ImagesSwiper images={product?.images!} />
       </div>
     </div>

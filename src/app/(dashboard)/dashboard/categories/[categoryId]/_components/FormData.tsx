@@ -86,7 +86,7 @@ const FormData = ({ data }: { data: Category }) => {
               />
             </div>
             <Button
-              variant="main"
+              variant="custom"
               disabled={isLoading}
               type="submit"
               className="w-full sm:w-[150px]"

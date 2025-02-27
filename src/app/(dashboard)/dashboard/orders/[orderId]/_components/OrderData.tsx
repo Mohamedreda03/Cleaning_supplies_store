@@ -52,7 +52,7 @@ export function OrderData({ order }: { order: IOrder }) {
     <div className="pb-16">
       <div className="mb-5">
         <div className="flex items-center gap-6">
-          <p>تعيل حالة الطلب</p>
+          <p>تعديل حالة الطلب</p>
           <div></div>
           <select
             className="border rounded-lg px-4"
@@ -75,6 +75,18 @@ export function OrderData({ order }: { order: IOrder }) {
             </TableCell>
             <TableCell colSpan={4} className="font-medium">
               {order.user_name}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-medium w-[200px]">كود الشريك</TableCell>
+            <TableCell colSpan={4} className="font-medium">
+              {order.user_id}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="font-medium w-[200px]">كود الجيفت</TableCell>
+            <TableCell colSpan={4} className="font-medium">
+              {order.gift_code}
             </TableCell>
           </TableRow>
 
@@ -131,7 +143,7 @@ export function OrderData({ order }: { order: IOrder }) {
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell>السعر</TableCell>
+            <TableCell>اجمالي سعر الطلب</TableCell>
             <TableCell colSpan={4}>
               {order.total} <span className="mr-1">جنية</span>
             </TableCell>
@@ -156,7 +168,10 @@ export function OrderData({ order }: { order: IOrder }) {
               <TableCell className="font-medium text-center">الكمية</TableCell>
 
               <TableCell className="font-medium text-center">
-                سعر المنتج
+                سعر المنتج الواحد
+              </TableCell>
+              <TableCell className="font-medium text-center">
+                السعر الكلي
               </TableCell>
             </TableRow>
             {order.orderItems?.map((orderItem) => (
@@ -175,6 +190,11 @@ export function OrderData({ order }: { order: IOrder }) {
                 </TableCell>
                 <TableCell className="text-center">
                   {orderItem.quantity}
+                </TableCell>
+
+                <TableCell className="text-center">
+                  {orderItem.total / orderItem.quantity}{" "}
+                  <span className="mr-1">جنية</span>
                 </TableCell>
 
                 <TableCell className="text-center">

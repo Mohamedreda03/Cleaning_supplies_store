@@ -78,7 +78,7 @@ const FormData = () => {
               />
             </div>
             <Button
-              variant="main"
+              variant="custom"
               disabled={isLoading}
               type="submit"
               className="w-full sm:w-[150px] disabled:opacity-50 disabled:cursor-not-allowed"

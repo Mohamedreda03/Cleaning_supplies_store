@@ -3,49 +3,56 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String  @id @default(cuid())
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
   name     String?
   email    String  @unique
   password String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([name, email, id])
 }
 
 model Category {
-  id       String    @id @default(cuid())
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   products Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([name, id])
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
   images      String[]
   best_seller Boolean     @default(false)
   name        String
   description String
   points      Int
   price       Float
+  categoryId  String      @db.ObjectId
   category    Category    @relation(fields: [categoryId], references: [id])
-  categoryId  String
   OrderItem   OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([name, categoryId, best_seller, id])
 }
 
 model Order {
-  id                 String      @id @default(cuid())
+  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
   user_name          String
   user_id            String
+  gift_code          String
   total              Float
   status             OrderStatus @default(PENDING)
   address            String
@@ -55,19 +62,23 @@ model Order {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([user_name, user_id, status, id])
 }
 
 model OrderItem {
-  id        String @id @default(cuid())
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
   total     Float
   quantity  Int
-  orderId   String
-  productId String
+  orderId   String @db.ObjectId
+  productId String @db.ObjectId
 
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id])
   item      Product  @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([orderId, productId, id])
 }
 
 enum OrderStatus {
